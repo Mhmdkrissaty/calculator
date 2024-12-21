@@ -51,6 +51,10 @@
         z-index: 1000;
         width: 100%;
     }
+    .nav-title {
+            font-size: 1.3rem !important;
+            font-weight: 600;
+        }
     .dark-mode .result-box {
     background-color: #1e1e1e !important;  /* Force dark background */
     color: white !important;  /* Force white text */
@@ -242,6 +246,43 @@
         .dark-mode button {
             background-color: #1a73e8;
         }
+
+
+        .reset-btn {
+    padding: 10px 20px;
+    border: none;
+    background-color: #dc3545;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.reset-btn:hover {
+    background-color: #c82333;
+}
+.reset-icon {
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.reset-icon:hover {
+    transform: rotate(360deg);
+}
+
+.moon-icon {
+    font-size: 1.5rem;
+    cursor: pointer;
+    margin-left: 20px;
+    transition: transform 0.3s ease;
+}
+
+.moon-icon:hover {
+    transform: rotate(20deg);
+}
+
+
     </style>
 </head>
 
@@ -250,14 +291,13 @@
     <nav>
         <div class="nav-title">Profit/Loss Calculator</div>
         <div class="theme-toggle">
-            <span>Dark Mode</span>
-            <label class="switch">
-                <input type="checkbox" id="themeToggle" onchange="toggleTheme()">
-                <span class="slider"></span>
-            </label>
+            <span class="reset-icon" onclick="resetForm()">🔄</span>
+            <span class="moon-icon" onclick="toggleTheme()">🌙</span>
         </div>
     </nav>
-
+    
+    
+    
     <div class="calculator-wrapper">
         <div class="container">
             <h1>Calculate Your Profit or Loss</h1>
@@ -337,6 +377,12 @@ Breakeven Price: ${breakeven}
     a.download = 'profit_loss_report.txt';
     a.click();
     URL.revokeObjectURL(url);
+}
+function resetForm() {
+    document.querySelectorAll('input[type="number"]').forEach(input => input.value = '');
+    document.getElementById('profitLoss').textContent = '-';
+    document.getElementById('profitPercentage').textContent = 'Profit/Loss (%): -';
+    document.getElementById('breakevenResult').textContent = '-';
 }
 
     </script>
