@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profit/Loss Calculator</title>
+    <style>
+        @media (max-width: 768px) {
+    .calculator-wrapper {
+        flex-direction: column;
+        margin-top: 0;
+        padding-top: 200px;  /* Pushes content below navbar */
+        padding-bottom: 280px;  /* Ensures space to scroll past result box */
+    }
+
+    .container {
+        flex: 1;
+        margin-bottom: 0;  /* Remove margin-bottom and rely on wrapper padding */
+    }
+    .result-box {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 50% !important;
+    transform: translateX(-50%);
+    width: 100% !important;
+    max-width: 600px !important;
+    margin: 0 !important;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1) !important;
+    border-radius: 0 !important;
+    background-color: #fff !important;
+    text-align: center !important;
+    padding: 20px 10px !important;
+    
+    /* Flexbox for centering content */
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    min-height: 150px !important;  /* Ensure enough height for vertical centering */
+}
+
+@media (max-width: 768px) {
+    .download-btn {
+        width: 90% !important;
+        max-width: 300px !important;
+    }
+}
+
+    nav {
+        z-index: 1000;
+        width: 100%;
+    }
+    .dark-mode .result-box {
+    background-color: #1e1e1e !important;  /* Force dark background */
+    color: white !important;  /* Force white text */
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.5) !important;  /* Adjust shadow for dark mode */
+}
+
+}
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        nav {
+            background-color: #fff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 60px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            position: fixed;
+            top: 0;
+            width: calc(100% - 120px); /* Accounts for left and right padding */
+        }
+
+        .nav-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .theme-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+        }
+
+        .switch input {
+            display: none;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ddd;
+            transition: 0.4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #007BFF;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        .calculator-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-top: 120px;
+            width: 90%;
+            max-width: 1000px;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            flex: 1;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .result-box {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            flex: 0.8;
+            margin-left: 40px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        label {
+            display: block;
+            margin: 16px 0 8px;
+            text-align: left;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+
+        button {
+            width: 100%;
+            padding: 16px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            background-color: #007BFF;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .profit-loss {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .profit {
+            color: #28a745;
+        }
+
+        .loss {
+            color: #dc3545;
+        }
+
+        .neutral {
+            color: #6c757d;
+        }
+
+        .dark-mode {
+            background-color: #121212;
+            color: #fff;
+        }
+
+        .dark-mode nav {
+            background-color: #333;
+        }
+
+        .dark-mode .container,
+        .dark-mode .result-box {
+            background-color: #1e1e1e;
+            color: white;
+        }
+
+        .dark-mode input,
+        .dark-mode select {
+            background-color: #444;
+            color: white;
+            border: 1px solid #666;
+        }
+
+        .dark-mode button {
+            background-color: #1a73e8;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav>
+        <div class="nav-title">Profit/Loss Calculator</div>
+        <div class="theme-toggle">
+            <span>Dark Mode</span>
+            <label class="switch">
+                <input type="checkbox" id="themeToggle" onchange="toggleTheme()">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </nav>
+
+    <div class="calculator-wrapper">
+        <div class="container">
+            <h1>Calculate Your Profit or Loss</h1>
+
+            <label for="initialPrice">Initial Price ($):</label>
+            <input type="number" id="initialPrice" step="0.01" placeholder="Enter initial price">
+
+            <label for="amountInvested">Amount Invested ($):</label>
+            <input type="number" id="amountInvested" step="0.01" placeholder="Enter amount invested">
+
+            <label for="currentPrice">Current Price ($):</label>
+            <input type="number" id="currentPrice" step="0.01" placeholder="Enter current price">
+
+            <label for="newInvestment">New Investment Amount ($):</label>
+            <input type="number" id="newInvestment" step="0.01" placeholder="Enter new investment amount">
+
+            <button onclick="calculate()">Calculate</button>
+        </div>
+
+        <div class="result-box">
+            <p class="profit-loss" id="profitLoss">-</p>
+            <p id="profitPercentage">Profit/Loss (%): -</p>
+            <p>Breakeven Price: <span id="breakevenResult">-</span></p>
+            <button class="download-btn" onclick="downloadReport()">Download Report</button>
+
+        </div>
+        
+    </div>
+
+    <script>
+        function calculate() {
+            const initialPrice = parseFloat(document.getElementById('initialPrice').value);
+            const amountInvested = parseFloat(document.getElementById('amountInvested').value);
+            const currentPrice = parseFloat(document.getElementById('currentPrice').value);
+            const newInvestment = parseFloat(document.getElementById('newInvestment').value || 0);
+
+            if (isNaN(initialPrice) || isNaN(amountInvested) || isNaN(currentPrice)) {
+                alert("Please fill in all fields.");
+                return;
+            }
+
+            const profitLoss = (currentPrice - initialPrice) * (amountInvested / initialPrice);
+            const profitLossPercentage = ((currentPrice - initialPrice) / initialPrice) * 100;
+            const breakeven = (amountInvested + newInvestment) / ((amountInvested / initialPrice) + (newInvestment / currentPrice));
+
+            const formattedProfitLoss = profitLoss.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+            const profitLossElement = document.getElementById('profitLoss');
+            const percentageElement = document.getElementById('profitPercentage');
+
+            profitLossElement.textContent = formattedProfitLoss;
+            percentageElement.textContent = `Profit/Loss (%): ${profitLossPercentage.toFixed(2)}%`;
+            profitLossElement.className = profitLoss >= 0 ? 'profit-loss profit' : 'profit-loss loss';
+
+            document.getElementById('breakevenResult').textContent = breakeven.toFixed(2);
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+        }
+        function downloadReport() {
+    const profitLoss = document.getElementById('profitLoss').textContent;
+    const profitPercentage = document.getElementById('profitPercentage').textContent;
+    const breakeven = document.getElementById('breakevenResult').textContent;
+
+    const content = `
+Profit/Loss Report
+-------------------
+Profit/Loss: ${profitLoss}
+${profitPercentage}
+Breakeven Price: ${breakeven}
+    `;
+
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'profit_loss_report.txt';
+    a.click();
+    URL.revokeObjectURL(url);
+}
+
+    </script>
+
+</body>
+
+</html>
